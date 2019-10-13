@@ -44,15 +44,14 @@ Installation
     bash build-benchmarks.sh
     ```
 
-8. Test whether the installation is successful: in the terminal used in the previous step, run 
+9. Test whether the installation is successful: in the terminal used in the previous step, run 
 
     ```
     bash test-install.sh
     ```
-
-    If you see `Installation is successful` in the end, then the installation is complete.
-
-    (-v ?)
+    
+   This will test the installation of Z3, CoSA, Yosys, CVC4, and ABC.
+   If the tests print "Okay" then the corresponding tool has been installed successfully.
 
 
 Structure of the Artifact
@@ -95,31 +94,28 @@ Experiment Environment
 The experiments were originally conducted on Ubuntu 18.04 on
 Dell XPS 9570 with i5-8300H CPU, 32GB memory and 1TB PCIe SSD.
 When running in the artifact evalution virtual machine, the outcome
-could differ in the following aspects:
+could differ in the following ways:
 
   1. As the virtual machine is equipped with a smaller RAM size (8GB),
      some experiments (for comparison purpose) may hit memory limit first
-     and terminate due to out-of-memory rather than time-out as we reported in the paper.
+     and terminate due to out-of-memory rather than time-out.
 
-  2. For faster evaluation, we set a smaller time-out limit (2 hours) per each experiment. 
+  2. For faster evaluation, we set a smaller time-out limit (2 hours per run)
+     We originally use 10 hours as the time-out limit.
   
-  3. We shipped our artifact with a pre-compiled release version of Z3 (version 4.8.5), 
+  3. We shipped our artifact with a pre-compiled version of Z3 (release version 4.8.5), 
      which seems to differ from the latest Github version (Hash: 224cc8f) in the invariants 
-     it generates, and therefore for the comparing method `PdrChc` the number of CEGAR 
-     iterations could be slightly different from the number reported in the paper.
+     it generates. This could affect the number of CEGAR needed for method `PdrChc`.
 
   4. Due to license issue, function equivalence checking part of Gaussin-blur accelerator that
      uses Cadence JasperGold could not be packaged into this artifact. We save the invariant
-     synthesis problem in each iteration which are used to reproduce the results in invariant
-     synthesis and skipped the equivalence checking part.
+     synthesis problems in each CEGAR iteration which are used to reproduce the results in invariant
+     synthesis. We skip the equivalence checking part of this benchmark.
 
 
 The above changes shall not affact the overall claim that Grain with its SyGuS-based method complements
 existing PDR-based and SyGuS-based method for environment invariant synthesis problem in modular
 hardware verification.
-
-
-(ulimit -Sv 6291456)
 
 
 Experiment 1: Grain on All Testcases
@@ -138,17 +134,17 @@ The first run (RC) will finish relatively quickly
 
 The second run (SP) will finish in around several minutes, followed
 by AES, Pico, and GB. For the three practical design cases, due to 
-their large size, the running time could be as long as two hours in total.
+their large sizes, the running time is about two hours in total.
 
 When finished successfully, the number of CEGAR iteration, synthesis time
-and equivalence time will be reported. (For RelChc method, it does not use
-CEGAR, therefore only the total time will be reported).
+and functional equivalence time will be reported. (For RelChc method, it does 
+not use CEGAR, therefore only the total time will be reported).
 
 
-Experiment 2: Comparative Experiments on RC and SP
+Experiment 2:  All Five Methods on RC and SP
 ------------------------------------------------------
 This experiment runs all five methods on the first two synthetic
-designs (RC and SP). Each run should finish in a couple of minutes,
+designs (RC and SP). Each run should finish within a couple of minutes,
 except for Cvc4Sy and RelChc on SP, by default we set a small time
 limit (10 mins) for fast evaluation. To use the default time-out,
 in the `VMCAI-2020-AE-master/testcases` folder, run:
@@ -158,7 +154,7 @@ python runRC.py
 python runSP.py
 ```
 
-To use a customized time-out limit run:
+If you would like to use a customized time limit, run:
 ```
 python -t <time-limit-in-seconds> runRC.py 
 python -t <time-limit-in-seconds> runSP.py 
@@ -169,11 +165,9 @@ Experiment 3: Comparative Experiments on AES, Pico, and GB
 ------------------------------------------------------
 This set of experiments run the four methods (RelChc, PdrChc, PdrAbc, Cvc4Sy)
 for comparison purpose. Only two runs (PdrChc and Cvc4Sy on GB can complete
-succesfully within the time and memory limit). You can choose whether to 
-run all methods to full extend (till it hit time-limit/memory-limit) or
-to run only the two succesful method.
-
-To run only the two successful methods, in the `VMCAI-2020-AE-master/testcases` folder,
+succesfully within the time and memory limit). By default, the script runs only
+the two successful method on GB.
+In the `VMCAI-2020-AE-master/testcases` folder, run:
 
 ```
 python runAES-Pico-GB.py 
@@ -182,7 +176,7 @@ This will take around an hour to finish.
 
 
 If you would like to run all methods (whether succesful or not) until 
-they hit time-out limit (this could take more than 20hours), in the 
+they hit the time-out limit (this could take more than 20 hours), in the 
 `VMCAI-2020-AE-master/testcases` folder,
 
 ```
@@ -192,10 +186,9 @@ python -a runAES-Pico-GB.py
 
 The Overall Result
 ------------------------------------------------------
-The above experiments shows that Grain with its SyGuS-based method complements
-existing PDR-based and SyGuS-based method for environment invariant synthesis 
-problem in modular hardware verification, especially on the those pratical designs 
-(AES, Pico, and GB).
+The above experiments shows that Grain could finish all five examples within 
+2 hours. On the other hand, the other methods, under the same time and memory
+limit, fail in most cases on the three practical designs (AES, Pico and GB).
 
 
 
