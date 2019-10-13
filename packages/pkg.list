@@ -1,0 +1,2 @@
+flex bison libboost-all-dev verilator libtcl8.6 libreadline-dev tcl8.6-dev tcl-dev
+python3-venv libgmp3-dev libmpfr-dev libmpc-dev subversion libncurses-dev

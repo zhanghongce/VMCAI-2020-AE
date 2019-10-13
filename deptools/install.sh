@@ -1,5 +1,5 @@
 #!/bin/bash
-cwd = `pwd`
+cwd=`pwd`
 unzip yosys.zip -d ~/
 unzip z3.zip -d ~/
 unzip boolector.zip -d ~/
