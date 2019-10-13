@@ -1,0 +1,96 @@
+branches:
+  only:
+    - master
+    - travis
+    - pre-release
+
+git:
+  depth: 1
+  submodules: false
+
+sudo: required
+
+language: cpp
+
+cache:
+  directories:
+    - $HOME/_cache
+
+matrix:
+  include:
+    - name: "linux-gcc"
+      os: linux
+      dist: xenial
+      compiler: gcc
+      before_install:
+        - gem install coveralls-lcov
+      before_script:
+        - mkdir -p $TRAVIS_BUILD_DIR/build 
+        - source $TRAVIS_BUILD_DIR/scripts/travis/clean-coverage.sh $TRAVIS_BUILD_DIR/build 
+      after_success:
+        - source $TRAVIS_BUILD_DIR/scripts/travis/submit-coverage.sh $TRAVIS_BUILD_DIR/build 
+
+    - name: "linux-clang"
+      os: linux
+      dist: xenial
+      compiler: clang
+      before_install:
+        - export LD_LIBRARY_PATH=/usr/local/clang/lib:$LD_LIBRARY_PATH
+
+    - name: "gcc49"
+      os: linux
+      dist: xenial
+      addons:
+        apt: 
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+            - flex
+            - bison
+            - libboost-all-dev
+            - z3
+            - libz3-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+      before_install:
+        - eval "${MATRIX_EVAL}"
+
+    - name: "osx"
+      os: osx
+      before_install:
+        - brew install bison
+        - export PATH="/usr/local/opt/bison/bin:$PATH"
+        - export LDFLAGS="-L/usr/local/opt/bison/lib"
+
+addons:
+  apt:
+    update: true
+    packages:
+      - lcov
+      - flex
+      - bison
+      - libboost-all-dev
+      - z3
+      - libz3-dev
+  homebrew:
+    update: true
+    packages:
+      - flex
+      - python
+      - boost
+      - boost-python
+      - z3
+
+script:
+  - cd $TRAVIS_BUILD_DIR
+  - mkdir -p build
+  - cd build
+  - cmake .. -DILANG_BUILD_COV=ON -DCMAKE_BUILD_TYPE=Debug
+  - make -j$(nproc)
+  - sudo make install
+  - make run_test
+  - ctest -R ExampleCMakeBuild
+
+notifications:
+    email: false

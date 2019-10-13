@@ -1,0 +1,14 @@
+/// \file
+/// CMake defined config file
+
+#ifndef CONFIG_CMAKE_DEFINE_H__
+#define CONFIG_CMAKE_DEFINE_H__
+
+//#cmakedefine VERILOG_IN_ENABLE
+
+#cmakedefine Z3_LEGACY_API 
+
+#cmakedefine SYNTH_INTERFACE
+
+#endif // CONFIG_CMAKE_DEFINE_H__
+

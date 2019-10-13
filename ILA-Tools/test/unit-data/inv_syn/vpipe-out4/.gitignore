@@ -1,0 +1,11 @@
+ADD/*
+AND/*
+NOP/*
+SUB/*
+inv-syn/*
+inv-syn-test/*
+invariants/*
+__synthesis_result.txt
+__verification_result.txt
+
+
