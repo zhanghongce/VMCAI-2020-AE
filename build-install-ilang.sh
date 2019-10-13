@@ -1,6 +1,6 @@
 #!/bin/bash
 echo '-------------------- Build ILAng ---------------------'
-cd ILA-Tool
+cd ILA-Tools
 bash rebuild
 cd build
 echo '-------------------- Install ILAng ---------------------'

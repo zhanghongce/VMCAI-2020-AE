@@ -1,7 +1,7 @@
 Installation
 ==================
 
-1. Please first download the zip archive from the link we provided. (You should have completed this step)
+1. Please first download the zip archive from the link we provided. (You should have already completed this step)
 
 2. Unzip the archive. You can either (a) double click the archive in the file explorer (namely nautilus) and click "Extract" on the top left corner of the window to unzip or (b) using command line `unzip master.zip`. The unzipping process will automatically create a folder named `VMCAI-2020-AE-master`, within which there are the directory of the artifact: `ILAng`, the license and this readme.
 
@@ -22,7 +22,7 @@ Installation
     bash install-tools.sh
     ```
 
-   When prompted for password, please type your password ("vmcai2020" for this VM) and press `<Enter>` to grant root permission.
+   When prompted for password, please enter your password to grant root permission.
  
 6. Install ILAng framework: in the terminal just used in the previous step, run 
 
@@ -30,7 +30,7 @@ Installation
     bash build-install-ilang.sh
     ```
 
-   When prompted for password, please type your password ("vmcai2020" for this VM) and press `<Enter>` to grant root permission.
+   When prompted for password, please enter your password to grant root permission.
 
 7. Build the benchmarks: in the terminal used in the previous step, run 
 
@@ -38,26 +38,20 @@ Installation
     bash build-benchmarks.sh
     ```
 
-8. Build the benchmarks: in the terminal used in the previous step, run 
-
-    ```
-    bash build-benchmarks.sh
-    ```
-
-9. Test whether the installation is successful: in the terminal used in the previous step, run 
+8. Test whether the installation is successful: in the terminal used in the previous step, run 
 
     ```
     bash test-install.sh
     ```
     
    This will test the installation of Z3, CoSA, Yosys, CVC4, and ABC.
-   If the tests print "Okay" then the corresponding tool has been installed successfully.
+   If all the tests print "Okay" then the tools have been installed successfully.
 
 
 Structure of the Artifact
 =====================
 
-  * `packages`, `deptools` , and `ILA-Tool` subfolders are for the dependent packages, tools and framework.
+  * `packages`, `deptools` , and `ILA-Tools` subfolders are for the dependent packages, tools and framework.
   * the `testcase` folder contains five examples as mentioned in the paper
     - `RC` : redundant counters
     - `SP` : a simple processing pipeline
@@ -97,21 +91,21 @@ When running in the artifact evalution virtual machine, the outcome
 could differ in the following ways:
 
   1. As the virtual machine is equipped with a smaller RAM size (8GB),
-     some experiments (for comparison purpose) may hit memory limit first
+     some experiments, which are for comparison purpose, may hit memory limit first
      and terminate due to out-of-memory rather than time-out.
 
   2. For faster evaluation, we set a smaller time-out limit (2 hours per run)
-     We originally use 10 hours as the time-out limit.
+     We originally use 10 hours.
   
   3. We shipped our artifact with a pre-compiled version of Z3 (release version 4.8.5), 
      which seems to differ from the latest Github version (Hash: 224cc8f) in the invariants 
-     it generates. This could affect the number of CEGAR needed for method `PdrChc`.
+     it generates. This causes the numbers of CEGAR iteration for method `PdrChc` differs from
+     those reported in the paper.
 
-  4. Due to license issue, function equivalence checking part of Gaussin-blur accelerator that
-     uses Cadence JasperGold could not be packaged into this artifact. We save the invariant
-     synthesis problems in each CEGAR iteration which are used to reproduce the results in invariant
-     synthesis. We skip the equivalence checking part of this benchmark.
-
+  4. Due to license issue, the instruction-level functional equivalence checking part 
+     of Gaussin-blur accelerator that uses Cadence JasperGold could not be packaged into this artifact. 
+     Instead, we save the invariant synthesis problems in each CEGAR iteration and only reproduce the
+     invariant synthesis results for Gaussin-blur accelerator.
 
 The above changes shall not affact the overall claim that Grain with its SyGuS-based method complements
 existing PDR-based and SyGuS-based method for environment invariant synthesis problem in modular
