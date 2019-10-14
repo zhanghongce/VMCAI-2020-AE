@@ -22,7 +22,7 @@ Installation
     bash install-tools.sh
     ```
 
-   When prompted for password, please enter your password to grant root permission.
+   If prompted for password, please enter your password to grant root permission.
  
 6. Install ILAng framework: in the terminal just used in the previous step, run 
 
@@ -30,7 +30,8 @@ Installation
     bash build-install-ilang.sh
     ```
 
-   When prompted for password, please enter your password to grant root permission.
+   There might be some warnings in the compilation process, it is okay to ignore these
+   warningn messages. If prompted for password, please enter your password to grant root permission.
 
 7. Build the benchmarks: in the terminal used in the previous step, run 
 
@@ -44,14 +45,16 @@ Installation
     bash test-install.sh
     ```
     
-   This will test the installation of Z3, CoSA, Yosys, CVC4, and ABC.
-   If all the tests print "Okay" then the tools have been installed successfully.
+   This will test the installation of Z3, CoSA, Yosys, CVC4, and ABC. The test for CoSA might
+   take slightly longer time compared to other tests, this is normal as the initial run of
+   CoSA will invoke Cython to compile itself into binary. If all the tests print "Okay" then the tools 
+   have been installed successfully.
 
 
 Structure of the Artifact
 =====================
 
-  * `packages`, `deptools` , and `ILA-Tools` subfolders are for the dependent packages, tools and framework.
+  * `packages`, `deptools` , and `ILA-Tools.zip` are for the dependent packages, tools and framework.
   * the `testcase` folder contains five examples as mentioned in the paper
     - `RC` : redundant counters
     - `SP` : a simple processing pipeline
@@ -130,7 +133,12 @@ Experiment 1: Grain on All Testcases
 This experiment is to show that Grain is able to finish five
 test cases with a time-out of 7200 seconds per run.
 
-In the `VMCAI-2020-AE-master/testcases` folder, run
+If you are in the `VMCAI-2020-AE-master` folder, type
+```
+cd testcases
+```
+to change directory to `VMCAI-2020-AE-master/testcases`, and
+then run
 ```
 python runGrain.py
 ```

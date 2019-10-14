@@ -54,6 +54,7 @@ def RunTests(tests, timeout, total):
       print '--------------------------'
       print '|        Job: (%3d/%3d)  |' % (idx, total)
       print '--------------------------'
+      print 'Start time:', datetime.datetime.now()
       print 'Run:', full_prg
       print 'Design:',directory
       idx += 1
