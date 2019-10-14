@@ -1,6 +1,6 @@
 #!/bin/bash
 echo '-------------------- Build ILAng ---------------------'
-unzip ILA-Tools.zip ~/
+unzip ILA-Tools.zip -d ~/
 cd ~/ILA-Tools
 bash rebuild
 cd build
