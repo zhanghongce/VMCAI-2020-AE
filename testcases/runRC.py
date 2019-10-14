@@ -68,7 +68,7 @@ def RunTests(tests, timeout, total):
             print '--------------------------'
             print '|       Result           |'
             print '--------------------------'
-            print 'Process:    ',res
+            print 'Status :   ',res
             print 't(total)  =',total_time
             print '--------------------------'
             print
@@ -78,7 +78,7 @@ def RunTests(tests, timeout, total):
             print '--------------------------'
             print '|       Result           |'
             print '--------------------------'
-            print 'Process:    ',res
+            print 'Status :    ',res
             print '#(iter)    =',cegar_iter
             print 't(syn)     =',syn_time
             print 't(eq)      =',eq_time
