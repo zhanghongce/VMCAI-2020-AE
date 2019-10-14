@@ -86,28 +86,28 @@ Reproduce Experiment Results
 Experiment Environment
 ------------------------------------------------------
 The experiments were originally conducted on Ubuntu 18.04 on
-Dell XPS 9570 with i5-8300H CPU, 32GB memory and 1TB PCIe SSD.
-When running in the artifact evalution virtual machine, the outcome
-could differ in the following ways:
+Dell XPS 9570 laptop with i5-8300H CPU (4-core 8-thread, up to 4.0GHz),
+32GB memory and 1TB PCIe SSD. When running in the artifact evalution 
+virtual machine, the outcome could differ in the following ways:
 
   1. As the virtual machine is equipped with a smaller RAM size (8GB),
      some experiments, which are for comparison purpose, may hit memory limit first
-     and terminate due to out-of-memory rather than time-out.
+     and terminate due to out-of-memory instead of time-out.
 
-  2. For faster evaluation, we set a smaller time-out limit (2 hours per run)
-     We originally use 10 hours.
+  2. For faster evaluation, we set a smaller time-out limit (2 hours in maximum per run)
+     We originally use 10 hours as the time-limit.
   
-  3. We shipped our artifact with a pre-compiled version of Z3 (release version 4.8.5), 
+  3. We shipped our artifact with a release version of Z3 (version 4.8.5), 
      which seems to differ from the latest Github version (Hash: 224cc8f) in the invariants 
-     it generates. This causes the numbers of CEGAR iteration for method `PdrChc` differs from
-     those reported in the paper.
+     it generates. This causes the numbers of CEGAR iteration for method `PdrChc` slightly 
+     differs from those reported in the paper.
 
   4. Due to license issue, the instruction-level functional equivalence checking part 
-     of Gaussin-blur accelerator that uses Cadence JasperGold could not be packaged into this artifact. 
+     of Gaussin-blur accelerator that uses Cadence JasperGold could not be packed into this artifact. 
      Instead, we save the invariant synthesis problems in each CEGAR iteration and only reproduce the
      invariant synthesis results for Gaussin-blur accelerator.
 
-The above changes shall not affact the overall claim that Grain with its SyGuS-based method complements
+The above changes shall not affact the overall results that Grain with its SyGuS-based method complements
 existing PDR-based and SyGuS-based method for environment invariant synthesis problem in modular
 hardware verification.
 
@@ -148,7 +148,11 @@ python runRC.py
 python runSP.py
 ```
 
-If you would like to use a customized time limit, run:
+Within the 10-min time limit, PdrAbc, PdrChc and Grain will be able to finish, 
+the other two (RelChc and Cvc4Sy) will time out. If you increase time-limit to 
+1800 seconds, only Cvc4Sy will time-out.
+
+If you would like to use a customized time-limit, run:
 ```
 python -t <time-limit-in-seconds> runRC.py 
 python -t <time-limit-in-seconds> runSP.py 
@@ -158,10 +162,11 @@ python -t <time-limit-in-seconds> runSP.py
 Experiment 3: Comparative Experiments on AES, Pico, and GB
 ------------------------------------------------------
 This set of experiments run the four methods (RelChc, PdrChc, PdrAbc, Cvc4Sy)
-for comparison purpose. Only two runs (PdrChc and Cvc4Sy on GB can complete
-succesfully within the time and memory limit). By default, the script runs only
-the two successful method on GB.
-In the `VMCAI-2020-AE-master/testcases` folder, run:
+on three practical designs (AES, PicoRV32 and GB) for comparison purpose. 
+Only two runs (PdrChc and Cvc4Sy on GB) can complete
+succesfully within the time (2 hours) and memory limit (8GB in total). 
+By default, the script only launches the two successful runs.
+In the `VMCAI-2020-AE-master/testcases` folder, you can run with:
 
 ```
 python runAES-Pico-GB.py 
@@ -182,7 +187,7 @@ The Overall Result
 ------------------------------------------------------
 The above experiments shows that Grain could finish all five examples within 
 2 hours. On the other hand, the other methods, under the same time and memory
-limit, fail in most cases on the three practical designs (AES, Pico and GB).
+limit, mostly fail on the three practical designs (AES, Pico and GB).
 
 
 
