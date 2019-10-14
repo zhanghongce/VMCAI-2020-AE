@@ -12,7 +12,7 @@ sudo ldconfig -n /usr/lib
 cd ~/yosys
 echo 'install yosys...'
 sudo make install
-cd ~/z3
+cd ~/z3/build
 sudo 'install z3...'
 sudo make install
 

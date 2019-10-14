@@ -3,7 +3,7 @@ Installation
 
 1. Please first download the zip archive from the link we provided. (You should have already completed this step)
 
-2. Unzip the archive. You can either (a) double click the archive in the file explorer (namely nautilus) and click "Extract" on the top left corner of the window to unzip or (b) using command line `unzip master.zip`. The unzipping process will automatically create a folder named `VMCAI-2020-AE-master`, within which there are the directory of the artifact: `ILAng`, the license and this readme.
+2. Unzip the archive. You can either (a) double click the archive in the file explorer (namely nautilus) and click "Extract" on the top left corner of the window to unzip or (b) using command line `unzip master.zip`. The unzipping process will automatically create a folder named `VMCAI-2020-AE-master`. Within this folder you can find installation scripts, the license, the supporting tools and the test cases.
 
 3. Open a terminal and change directory into the `VMCAI-2020-AE-master` folder. You can do this by first using the file explorer to navigate into the `VMCAI-2020-AE-master` folder and right clicking in the blank space of the file explorer and select "Open in Terminal".
 
