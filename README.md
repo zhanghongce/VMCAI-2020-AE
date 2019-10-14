@@ -3,7 +3,7 @@ Installation
 
 1. Please first download the zip archive from the link we provided. (You should have already completed this step)
 
-2. Unzip the archive. You can either (a) double click the archive in the file explorer (namely nautilus) and click "Extract" on the top left corner of the window to unzip or (b) using command line `unzip master.zip`. The unzipping process will automatically create a folder named `VMCAI-2020-AE-master`. Within this folder you can find installation scripts, the license, the supporting tools and the test cases.
+2. Unzip the archive if you have not done so. You can either (a) double click the archive in the file explorer (namely nautilus) and click "Extract" on the top left corner of the window to unzip or (b) using command line `unzip master.zip`. The unzipping process will automatically create a folder named `VMCAI-2020-AE-master`. Within this folder you can find this README, installation scripts, license, the dependent tools/packages, and the test cases.
 
 3. Open a terminal and change directory into the `VMCAI-2020-AE-master` folder. You can do this by first using the file explorer to navigate into the `VMCAI-2020-AE-master` folder and right clicking in the blank space of the file explorer and select "Open in Terminal".
 
@@ -68,10 +68,10 @@ Structure of the Artifact
   * `src` : source for time-counting utilities and the ILA model
   * `rfmap` or `refinement` : the refinement map, in JSON format
   * `verilog` : the Verilog implementation of the designs
-  * `grm` : the grammar used by Grain
+  * `grm` : the state variables in the four categories, used by Grain's grammar
   * `app` : the functional equivalence checking and invariant synthesis procedure
 
-  In the `app` subfolder, there are five source files in the following format:
+  In each of the `app` subfolders, there are five source files in the following format:
   ```
   main-xxxx.cc
   ```
@@ -83,6 +83,20 @@ Structure of the Artifact
 Reproduce Experiment Results
 ====================================
 
+
+Brief Introduction on the Workflow
+------------------------------------------------------
+Each experiment below includes several runs, each with a different
+invariant synthesis methods, or on a different design.
+The target in each run is to prove that an instruction-level
+abstraction (ILA) is functional equivalent to a register-transfer-level
+(RTL) description. This includes (a) functional equivalent checking
+and (b) environment invariant synthesis. The two are separate
+procedures for PdrChc, PdrAbc, Cvc4sy and Grain, but for RelChc, it uses
+Z3 to solve the two problems together. A more detailed description of workflow 
+can be found in the paper.
+
+
 Experiment Environment
 ------------------------------------------------------
 The experiments were originally conducted on Ubuntu 18.04 on
@@ -92,23 +106,22 @@ virtual machine, the outcome could differ in the following ways:
 
   1. As the virtual machine is equipped with a smaller RAM size (8GB),
      some experiments, which are for comparison purpose, may hit memory limit first
-     and terminate due to out-of-memory instead of time-out.
+     and terminate due to out-of-memory error instead of time-out.
 
-  2. For faster evaluation, we set a smaller time-out limit (2 hours in maximum per run)
-     We originally use 10 hours as the time-limit.
+  2. For avoid the long evaluation time, we set a smaller time-out limit (2 hours in maximum for 
+     each run). We originally use 10 hours as the time-limit.
   
-  3. We shipped our artifact with a release version of Z3 (version 4.8.5), 
-     which seems to differ from the latest Github version (Hash: 224cc8f) in the invariants 
-     it generates. This causes the numbers of CEGAR iteration for method `PdrChc` slightly 
-     differs from those reported in the paper.
+  3. The functional equivalence checking procedure may not always generate the same model 
+     (counterexample) on the same failing property and therefore the number of CEGAR iterations 
+     could be slightly different.
 
-  4. Due to license issue, the instruction-level functional equivalence checking part 
-     of Gaussin-blur accelerator that uses Cadence JasperGold could not be packed into this artifact. 
+  4. Instruction-level functional equivalence checking procedure of Gaussin-blur accelerator uses 
+     Cadence JasperGold. Due to license issue, Cadence JasperGold could not be packed into this artifact. 
      Instead, we save the invariant synthesis problems in each CEGAR iteration and only reproduce the
-     invariant synthesis results for Gaussin-blur accelerator.
+     invariant synthesis results for Gaussin-blur accelerator in this artifact.
 
 The above changes shall not affact the overall results that Grain with its SyGuS-based method complements
-existing PDR-based and SyGuS-based method for environment invariant synthesis problem in modular
+existing PDR-based and SyGuS-based method in the environment invariant synthesis problem for modular
 hardware verification.
 
 
@@ -124,15 +137,19 @@ python runGrain.py
 
 The first run (RC) will finish relatively quickly
 (in several seconds), the synthesized invariants can be found in 
-`VMCAI-2020-AE-master/testcases/RC/verifaction/Grain/inv.txt`. 
+`VMCAI-2020-AE-master/testcases/RC/verifaction/Grain/inv.txt`, which
+shows that the state variable `m1.imp` is 1's-complement of another 
+state variable `m1.v`.
 
 The second run (SP) will finish in around several minutes, followed
 by AES, Pico, and GB. For the three practical design cases, due to 
 their large sizes, the running time is about two hours in total.
 
 When finished successfully, the number of CEGAR iteration, synthesis time
-and functional equivalence time will be reported. (For RelChc method, it does 
-not use CEGAR, therefore only the total time will be reported).
+and functional equivalence checking time of one run will be reported. 
+(For RelChc method, it does not use CEGAR, therefore only the total time
+will be reported). If the solver hits time limit or memory limit, it will
+be killed and its status will be reported as "KILLED".
 
 
 Experiment 2:  All Five Methods on RC and SP
@@ -182,10 +199,16 @@ they hit the time-out limit (this could take more than 20 hours), in the
 python -a runAES-Pico-GB.py 
 ```
 
+By default, linux's out-of-memory (OOM) killer should be able to find the 
+right process to kill when a test run occupies too much memory. If you want
+to manually set a limit, you can use command `ulimit -Sv <size>`, where 
+`<size>` has a unit of 1KB.
+
+
 
 The Overall Result
 ------------------------------------------------------
-The above experiments shows that Grain could finish all five examples within 
+The above experiments show that Grain could finish all five examples within 
 2 hours. On the other hand, the other methods, under the same time and memory
 limit, mostly fail on the three practical designs (AES, Pico and GB).
 
