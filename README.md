@@ -171,8 +171,8 @@ the other two (RelChc and Cvc4Sy) will time out. If you increase time-limit to
 
 If you would like to use a customized time-limit, run:
 ```
-python -t <time-limit-in-seconds> runRC.py 
-python -t <time-limit-in-seconds> runSP.py 
+python runRC.py -t <time-limit-in-seconds>
+python runSP.py -t <time-limit-in-seconds>
 ```
 
 
@@ -196,7 +196,7 @@ they hit the time-out limit (this could take more than 20 hours), in the
 `VMCAI-2020-AE-master/testcases` folder,
 
 ```
-python -a runAES-Pico-GB.py 
+python runAES-Pico-GB.py -a
 ```
 
 By default, linux's out-of-memory (OOM) killer should be able to find the 

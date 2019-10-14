@@ -86,7 +86,25 @@ def RunTests(tests, timeout, total):
           print 'Done'
         except OSError:
           print 'Unable to kill'
-        process.wait()     
+        process.wait()
+      if directory == 'Pico':
+        cmd = ['pgrep -f .*python.*runGrain.py']
+        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, 
+          stderr=subprocess.PIPE)
+        my_pid, err = process.communicate()
+        should_not_kill = my_pid.splitlines()
+        
+        cmd2 = ['pgrep -n python']
+        process2 = subprocess.Popen(cmd2, shell=True, stdout=subprocess.PIPE, 
+          stderr=subprocess.PIPE)
+        my_pid, err = process.communicate()
+        should_kill = my_pid.splitlines()
+        
+        for p in should_kill:
+          if p in should_not_kill:
+            continue
+          os.system('kill '+p)       
+
           
       if os.path.exists(test_result_file):
         with open(test_result_file) as fin:
