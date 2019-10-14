@@ -90,7 +90,7 @@ def RunTests(tests, timeout, total):
           print 'Unable to kill'
         process.wait()
       if directory == 'Pico':
-        cmd = ' '.join(['pgrep','-f','.*python.*runGrain.py'])
+        cmd = ' '.join(['pgrep','-f','\'.*python.*runGrain.py\''])
         process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, 
           stderr=subprocess.PIPE)
         my_pid, err = process.communicate()
