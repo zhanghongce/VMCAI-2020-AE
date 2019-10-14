@@ -2,6 +2,7 @@
 cwd=`pwd`
 unzip yosys.zip -d ~/
 unzip z3.zip -d ~/
+unzip abc.zip -d ~/
 unzip boolector.zip -d ~/
 unzip cosaEnv.zip -d ~/
 unzip CoSA.zip -d ~/
