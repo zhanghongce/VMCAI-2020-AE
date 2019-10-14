@@ -56,7 +56,7 @@ int main (int argc, char ** argv) {
   vg.GenerateTargets();
 
   // os_portable_execute_shell({"bash",outDir+"INC/run.sh"}, outDir + "yosys-log.txt" , redirect_t::BOTH, 0);
-  auto res = os_portable_execute_shell({"z3",OutputPath+"OPERATE/wrapper.smt2"}, OutputPath + "eqcheck-invsyn.txt" , redirect_t::BOTH, timeout);
+  auto res = os_portable_execute_shell({"z3",OutputPath+"STORE/wrapper.smt2"}, OutputPath + "eqcheck-invsyn.txt" , redirect_t::BOTH, timeout);
   
   set_result(OutputPath, !res.timeout && res.subexit_normal, res.seconds, 0,0,0);
 

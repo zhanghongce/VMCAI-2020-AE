@@ -99,7 +99,7 @@ int main (int argc, char ** argv) {
     vg.GenerateSynthesisTarget();
     if(vg.RunSynAuto()) {
       std::cerr << "Cex is reachable! Cegar failed" << std::endl;
-
+      succeed = false;
       break; // cex is really reachable!!!
     }
     vg.ExtractSynthesisResult();

@@ -4,6 +4,7 @@ import subprocess
 import argparse
 import signal
 import time
+import datetime
 from customized_timeout import TimeoutException,TimeoutError
 
 proc_to_kill = {"PdrChc":"z3", "Cvc4Sy": "cvc4", "PdrAbc":"abc", "RelChc":"z3"}
@@ -63,6 +64,7 @@ def RunTests(tests, timeout, total):
       print '--------------------------'
       print '|        Job: (%3d/%3d)  |' % (idx, total)
       print '--------------------------'
+      print 'Start time:', datetime.datetime.now()
       print 'Run:', full_prg
       print 'Design:',directory
       idx += 1
@@ -78,11 +80,13 @@ def RunTests(tests, timeout, total):
       #print (proc_name)
       #os.setpgid(process.pid, process.pid)
       #process.getpgid(process.pid)
+      pythonkilled = False
       try:
         with TimeoutException(int(timeout)+5):
             process.communicate()
       except KeyboardInterrupt:
         print 'Try killing subprocess...',
+        pythonkilled = True
         try:
           process.terminate()
           print 'Done'
@@ -90,6 +94,7 @@ def RunTests(tests, timeout, total):
           print 'Unable to kill'
         process.wait()  
       except TimeoutError:
+        pythonkilled = True
         print 'Try killing subprocess...',
         try:
           process.terminate()
@@ -104,8 +109,14 @@ def RunTests(tests, timeout, total):
             time.sleep(1)
             pkill_result = os.system('pkill -n '+proc_name) 
           
+      if pythonkilled:  
+        print '--------------------------'
+        print '|       Result           |'
+        print '--------------------------'
+        print 'Status :   ','KILLED'
+        print '--------------------------'
           
-      if os.path.exists(test_result_file):
+      elif os.path.exists(test_result_file):
         with open(test_result_file) as fin:
           res, cegar_iter, syn_time, eq_time,total_time = getNumbers(fin)
           if outDir == 'RelChc':
@@ -114,7 +125,8 @@ def RunTests(tests, timeout, total):
             print '|       Result           |'
             print '--------------------------'
             print 'Status :   ',res
-            print 't(total)  =',total_time
+            if 'KILLED' not in res:
+              print 't(total)  =',total_time
             print '--------------------------'
             print
             
@@ -124,10 +136,11 @@ def RunTests(tests, timeout, total):
             print '|       Result           |'
             print '--------------------------'
             print 'Status :    ',res
-            print '#(iter)    =',cegar_iter
-            print 't(syn)     =',syn_time
-            print 't(eq)      =',eq_time
-            print 't(syn+eq)  =',syn_time+eq_time
+            if 'KILLED' not in res:
+              print '#(iter)    =',cegar_iter
+              print 't(syn)     =',syn_time
+              print 't(eq)      =',eq_time
+              print 't(syn+eq)  =',syn_time+eq_time
             print '--------------------------'
             print
       else:

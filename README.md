@@ -136,7 +136,7 @@ python runGrain.py
 ```
 
 The first run (RC) will finish relatively quickly
-(in several seconds), the synthesized invariants can be found in 
+(in less than a second), the synthesized invariants can be found in 
 `VMCAI-2020-AE-master/testcases/RC/verifaction/Grain/inv.txt`, which
 shows that the state variable `m1.imp` is 1's-complement of another 
 state variable `m1.v`.

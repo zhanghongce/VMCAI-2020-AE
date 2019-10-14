@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import argparse
 import signal
+import datetime
 from customized_timeout import TimeoutException,TimeoutError
 
 
@@ -88,16 +89,16 @@ def RunTests(tests, timeout, total):
           print 'Unable to kill'
         process.wait()
       if directory == 'Pico':
-        cmd = ['pgrep -f .*python.*runGrain.py']
+        cmd = ['pgrep','-f','.*python.*runGrain.py']
         process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, 
           stderr=subprocess.PIPE)
         my_pid, err = process.communicate()
         should_not_kill = my_pid.splitlines()
         
-        cmd2 = ['pgrep -n python']
+        cmd2 = ['pgrep', '-n' ,'python']
         process2 = subprocess.Popen(cmd2, shell=True, stdout=subprocess.PIPE, 
           stderr=subprocess.PIPE)
-        my_pid, err = process.communicate()
+        my_pid, err = process2.communicate()
         should_kill = my_pid.splitlines()
         
         for p in should_kill:
@@ -105,36 +106,32 @@ def RunTests(tests, timeout, total):
             continue
           os.system('kill '+p)       
 
+      print 
+      print '--------------------------'
+      print '|       Result           |'
+      print '--------------------------'
+      print 'End time:', datetime.datetime.now()
           
       if os.path.exists(test_result_file):
         with open(test_result_file) as fin:
           res, cegar_iter, syn_time, eq_time,total_time = getNumbers(fin)
           if outDir == 'RelChc':
-            print 
-            print '--------------------------'
-            print '|       Result           |'
-            print '--------------------------'
             print 'Status :   ',res
-            print 't(total)  =',total_time
+            if 'KILLED' not in res:
+              print 't(total)  =',total_time
             print '--------------------------'
             print
             
           else:
-            print 
-            print '--------------------------'
-            print '|       Result           |'
-            print '--------------------------'
             print 'Status :    ',res
-            print '#(iter)    =',cegar_iter
-            print 't(syn)     =',syn_time
-            print 't(eq)      =',eq_time
-            print 't(syn+eq)  =',syn_time+eq_time
+            if 'KILLED' not in res:
+              print '#(iter)    =',cegar_iter
+              print 't(syn)     =',syn_time
+              print 't(eq)      =',eq_time
+              print 't(syn+eq)  =',syn_time+eq_time
             print '--------------------------'
             print
       else:
-        print '--------------------------'
-        print '|       Result           |'
-        print '--------------------------'
         print 'skipped'
         print '--------------------------'
         print

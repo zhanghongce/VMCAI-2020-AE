@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import argparse
 import signal
+import datetime
 from customized_timeout import TimeoutException,TimeoutError
 
 
@@ -49,6 +50,7 @@ def RunTests(tests, timeout, total):
       print '--------------------------'
       print '|        Job: (%3d/%3d)  |' % (idx, total)
       print '--------------------------'
+      print 'Start time:', datetime.datetime.now()
       print 'Run:', full_prg
       idx += 1
       if not os.path.exists( full_prg ):
@@ -61,10 +63,12 @@ def RunTests(tests, timeout, total):
       print 'Method:',outDir
       #os.setpgid(process.pid, process.pid)
       #process.getpgid(process.pid)
+      pythonkilled = False
       try:
         with TimeoutException(int(timeout)+5):
             process.communicate()
       except KeyboardInterrupt:
+        pythonkilled = True
         print 'Try killing subprocess...',
         try:
           process.terminate()
@@ -75,6 +79,7 @@ def RunTests(tests, timeout, total):
         process.wait()     
         
       except TimeoutError:
+        pythonkilled = True
         print 'Try killing subprocess...',
         try:
           process.terminate()
@@ -84,35 +89,36 @@ def RunTests(tests, timeout, total):
           print 'Unable to kill'
         process.wait()     
           
-      if os.path.exists(test_result_file):
+      print 
+      print '--------------------------'
+      print '|       Result           |'
+      print '--------------------------'
+      print 'End time:', datetime.datetime.now()
+
+      if pythonkilled:  
+        print 'Status :   ','KILLED'
+        print '--------------------------'
+        
+      elif os.path.exists(test_result_file):
         with open(test_result_file) as fin:
           res, cegar_iter, syn_time, eq_time,total_time = getNumbers(fin)
           if outDir == 'RelChc':
-            print 
-            print '--------------------------'
-            print '|       Result           |'
-            print '--------------------------'
             print 'Status :   ',res
-            print 't(total)  =',total_time
+            if 'KILLED' not in res:
+              print 't(total)  =',total_time
             print '--------------------------'
             print
             
           else:
-            print 
-            print '--------------------------'
-            print '|       Result           |'
-            print '--------------------------'
             print 'Status :    ',res
-            print '#(iter)    =',cegar_iter
-            print 't(syn)     =',syn_time
-            print 't(eq)      =',eq_time
-            print 't(syn+eq)  =',syn_time+eq_time
+            if 'KILLED' not in res:
+              print '#(iter)    =',cegar_iter
+              print 't(syn)     =',syn_time
+              print 't(eq)      =',eq_time
+              print 't(syn+eq)  =',syn_time+eq_time
             print '--------------------------'
             print
       else:
-        print '--------------------------'
-        print '|       Result           |'
-        print '--------------------------'
         print 'skipped'
         print '--------------------------'
         print
