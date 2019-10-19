@@ -70,3 +70,71 @@ void set_timeout(int sec,  const std::string & outDir,   int * cegar_iter, doubl
   alarm (sec);
 
 }
+
+
+std::set<std::string> Split2Set(const std::string& str,
+                               const std::string& delim) {
+  std::set<std::string> tokens;
+  size_t prev = 0, pos = 0;
+  do {
+    pos = str.find(delim, prev);
+    if (pos == std::string::npos)
+      pos = str.length();
+    std::string token = str.substr(prev, pos - prev);
+    if (!token.empty())
+      tokens.insert(token);
+    prev = pos + delim.length();
+  } while (pos < str.length() && prev < str.length());
+  return tokens;
+}
+
+
+
+/// Replace all occurrance of substring a by substring b
+std::string ReplaceAll(const std::string& str, const std::string& a,
+                       const std::string& b) {
+  std::string result;
+  size_t find_len = a.size();
+  size_t pos, from = 0;
+  while (std::string::npos != (pos = str.find(a, from))) {
+    result.append(str, from, pos - from);
+    result.append(b);
+    from = pos + find_len;
+  }
+  result.append(str, from, std::string::npos);
+  return result;
+}
+
+
+void get_grm_stat(const char * grm_fname, int & ncs, int & ncio, int & ndsrc, int & nddst, int & nvargrp) {
+    std::set<std::string> CSvar, COvar, DIvar, DOvar;
+    std::string CSnames, CInames, COnames, DInames, DOnames;
+    std::string Group;
+    std::vector<std::set<std::string>> Groupings;
+    std::string buf;
+    std::ifstream gf(grm_fname);
+    while (gf.good())
+    {
+      getline(gf, buf);
+      if (buf.substr(0, 12) == "CTRL-STATE: ") CSnames += buf.substr(12);
+      else if (buf.substr(0, 9) == "CTRL-IN: ") CInames += buf.substr(9);
+      else if (buf.substr(0, 10) == "CTRL-OUT: ") COnames += buf.substr(10);
+      else if (buf.substr(0, 9) == "CTRL-IO: ") COnames += buf.substr(9);
+      else if (buf.substr(0, 9) == "DATA-IN: ") DInames += buf.substr(9);
+      else if (buf.substr(0, 10) == "DATA-SRC: ") DInames += buf.substr(10);
+      else if (buf.substr(0, 10) == "DATA-OUT: ") DOnames += buf.substr(10);
+      else if (buf.substr(0, 10) == "DATA-DST: ") DOnames += buf.substr(10);
+      else if (buf.substr(0, 11) == "VAR-GROUP: ") Groupings.push_back( Split2Set(ReplaceAll(buf.substr(11)," ", ""), ",") );
+    }
+    CSvar = Split2Set(ReplaceAll(CSnames," ", ""), ",");
+    COvar = Split2Set(ReplaceAll(COnames," ", ""), ",");
+    DIvar = Split2Set(ReplaceAll(DInames," ", ""), ",");
+    DOvar = Split2Set(ReplaceAll(DOnames," ", ""), ",");
+    ncs = CSvar.size();
+    ncio= COvar.size();
+    ndsrc=DIvar.size();
+    nddst=DOvar.size();
+    nvargrp = Groupings.size();
+}
+
+

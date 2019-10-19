@@ -10,5 +10,7 @@ void set_timeout(int sec,  const std::string & outDir,   int * cegar_iter, doubl
 void set_verify_timeout(int sec,  const std::string & outDir,   int * cegar_iter, double * syn_time, double * eq_time);
 void cancel_verify_timeout(int sec,  const std::string & outDir,   int * cegar_iter, double * syn_time, double * eq_time);
 
+void get_grm_stat(const char * grm_fname, int & ncs, int & ncio, int & ndsrc, int & nddst, int & nvargrp);
+
 
 #endif // ARTIFACT_UTILITY_H__
