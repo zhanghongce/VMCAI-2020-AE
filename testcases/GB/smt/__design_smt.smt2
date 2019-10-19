@@ -183,8 +183,7 @@
   (|wrapper#218| (_ BitVec 8)) ; \hls_U.hls_target_linebuffer_1_U0.in_stream_V_value_V_U.U_FIFO_hls_target_linebuffer_1_in_stream_V_value_V_ram.SRL_SIG[0]
   (|wrapper#219| (_ BitVec 8)) ; \hls_U.hls_target_linebuffer_1_U0.in_stream_V_value_V_U.U_FIFO_hls_target_linebuffer_1_in_stream_V_value_V_ram.SRL_SIG[1]
   (|wrapper#220| (_ BitVec 648)) ; \hls_U.p_p2_in_bounded_stencil_stream_s_U.U_FIFO_hls_target_p_p2_in_bounded_stencil_stream_s_ram.SRL_SIG[0]
-  (|wrapper#221| (_ BitVec 648)) ; \hls_U.p_p2_in_bounded_stencil_stream_s_U.U_FIFO_hls_target_p_p2_in_bounded_stencil_stream_s_ram.SRL_SIG[1]
-  (|wrapper#821| (_ BitVec 996)) ; \hls_U.p_p2_in_bounded_stencil_stream_s_U.U_FIFO_hls_target_p_p2_in_bounded_stencil_stream_s_ram.RME
+  (|wrapper#221| (_ BitVec 1644)) ; \hls_U.p_p2_in_bounded_stencil_stream_s_U.U_FIFO_hls_target_p_p2_in_bounded_stencil_stream_s_ram.SRL_SIG[1]
   (|wrapper#222| Bool) ; \hls_arg_1_TLAST
   (|wrapper#223| Bool) ; \hls_complete
   (|wrapper#224| Bool) ; \hls_exec

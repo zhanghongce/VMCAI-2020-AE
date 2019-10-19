@@ -210,13 +210,7 @@ retry:
     t_syn = design_stat.TimeOfInvSynEnhance;
     t_total = design_stat.TimeOfEqCheck + design_stat.TimeOfInvSynEnhance;
     n_cegar ++;
-
-  }while(not vg.in_bad_state());
-
-  vg.GetInvariants().ExportToFile(OutputPath+"inv.txt",false);
-  set_result(OutputPath, succeed,  t_syn + t_eq , n_cegar , t_syn , t_eq);
-
-
+    
   {
     std::ofstream fout(OutputPath+"stat.txt");
     int ncs, ncio, ndsrc, nddst, nvargrp;
@@ -231,6 +225,14 @@ retry:
     fout <<"#(Var-grp): " << nvargrp << std::endl;
     fout <<"#(cand): " << vg.total_freqhorn_cand << std::endl;
   }
+
+  }while(not vg.in_bad_state());
+
+  vg.GetInvariants().ExportToFile(OutputPath+"inv.txt",false);
+  set_result(OutputPath, succeed,  t_syn + t_eq , n_cegar , t_syn , t_eq);
+
+
+
 
   return 0;
 }

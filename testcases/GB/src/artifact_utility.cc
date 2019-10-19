@@ -46,7 +46,8 @@ void set_result(const std::string & outDir, bool succeeded, double total_sec, in
   fout << eq_time << std::endl; // eqcheck
   fout.flush();
 }
-
+// 10 min for verify
+#define V T-60*10
 /*volatile*//*sig_atomic_t*/ int * glb_cegar_iter = NULL;
 /*volatile*//*sig_atomic_t*/ double * glb_syn_time = NULL;
 /*volatile*//*sig_atomic_t*/ double * glb_eq_time = NULL;
@@ -191,7 +192,7 @@ int retrieveColonEol(const std::string & msg, const std::string & label) {
   size_t pos_1, endl_1;
   pos_1 = msg.find(label);
   endl_1 = msg.find('\n', pos_1);
-  return std::stoi(msg.substr(pos_1 + label.length(),endl_1)) T;
+  return std::stoi(msg.substr(pos_1 + label.length(),endl_1)) V;
 }
 
 int loadCandFromFile(const std::string & f) {
