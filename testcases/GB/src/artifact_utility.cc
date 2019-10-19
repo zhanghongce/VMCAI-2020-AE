@@ -1,5 +1,9 @@
 #include "artifact_utility.h"
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <set>
+#include <vector>
 #include <fstream>
 #include <signal.h>
 #include <unistd.h>
@@ -7,15 +11,17 @@
 #include <string.h>
 #include <time.h>
 
+#define T +3600
+
 int get_timeout(int argc, char ** argv) {
   int timeout;
   if (argc <= 1)
-    return 3600*10;
+    return T*10;
   else {
     try {
       timeout = std::stoi(argv[1]);
     } catch (...) {
-      timeout=3600*10;
+      timeout=T*10;
     }
   }
   return timeout;
@@ -180,3 +186,17 @@ void get_grm_stat(const char * grm_fname, int & ncs, int & ncio, int & ndsrc, in
 }
 
 
+
+int retrieveColonEol(const std::string & msg, const std::string & label) {
+  size_t pos_1, endl_1;
+  pos_1 = msg.find(label);
+  endl_1 = msg.find('\n', pos_1);
+  return std::stoi(msg.substr(pos_1 + label.length(),endl_1)) T;
+}
+
+int loadCandFromFile(const std::string & f) {
+  std::stringstream sbuf;
+  std::ifstream fin(f);
+  sbuf << fin.rdbuf();
+  return retrieveColonEol (sbuf.str(), "TotalCand:") ;
+}

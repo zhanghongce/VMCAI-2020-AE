@@ -94,21 +94,10 @@ int main (int argc, char ** argv) {
     os_portable_mkdir(OutputPath+"inv-enhance");
   }
 
-  { // save grammar file
-    std::string gmr = R"##(CTRL-STATE: m1.instr_bge, m1.is_alu_reg_reg, m1.irq_delay, m1.mem_state, m1.instr_beq, m1.instr_retirq, m1.instr_bgeu, m1.cpu_state, m1.instr_srli, m1.decoded_rs2, m1.irq_active, m1.instr_slt, m1.mem_do_prefetch, m1.instr_lbu, m1.is_beq_bne_blt_bge_bltu_bgeu, m1.instr_srai, m1.is_sll_srl_sra, m1.instr_sltu, m1.instr_slli, m1.instr_blt, m1.instr_jal, m1.instr_sltiu, m1.compressed_instr, m1.decoder_pseudo_trigger, m1.latched_store, m1.instr_sra, m1.instr_slti, m1.instr_bne, m1.is_sb_sh_sw, m1.instr_bltu
-CTRL-OUT: m1.instr_bge, m1.is_alu_reg_reg, m1.instr_srli, m1.is_lb_lh_lw_lbu_lhu, m1.latched_store, m1.instr_retirq, m1.instr_bgeu, m1.irq_delay, m1.instr_lbu, m1.irq_active, m1.instr_slt, m1.mem_do_prefetch, m1.do_waitirq, m1.mem_do_rinst, m1.mem_valid, m1.is_beq_bne_blt_bge_bltu_bgeu, m1.mem_la_firstword_reg, m1.instr_srai, m1.is_sll_srl_sra, m1.instr_sltu, m1.instr_slli, m1.instr_blt, m1.prefetched_high_word, m1.instr_sltiu, m1.latched_branch, m1.compressed_instr, m1.decoder_pseudo_trigger, m1.instr_beq, m1.instr_sra, m1.instr_slti, m1.reg_sh, m1.instr_bne, m1.is_sb_sh_sw, m1.instr_bltu, m1.is_lui_auipc_jal, m1.instr_lui, m1.mem_do_rdata, m1.instr_rdinstrh
-VAR-GROUP: m1.instr_slli, m1.instr_bge, m1.instr_sltu, m1.instr_srli, m1.instr_blt, m1.is_beq_bne_blt_bge_bltu_bgeu, m1.instr_slti, m1.instr_sltiu, m1.instr_beq, m1.is_sll_srl_sra, m1.instr_sra, m1.instr_slt, m1.is_alu_reg_reg, m1.instr_bne, m1.instr_bgeu, m1.is_sb_sh_sw, m1.instr_bltu
-VAR-GROUP: m1.irq_delay, m1.irq_active
-VAR-GROUP: m1.is_lb_lh_lw_lbu_lhu, m1.latched_branch, m1.latched_store
-)##";
-
-    std::ofstream fout(OutputPath + "inv-enhance/pico.gmr");
-    if (fout.is_open())
-      fout << gmr;
-    else
-      succeed = false;
+  {
+    os_portable_mkdir(OutputPath + "inv-enhance");
+    os_portable_copy_file_to_dir(RootPath+"/grm/pico.gmr", OutputPath + "inv-enhance/");
   } // save grammar file
-
 
   { // save grammar file
     std::string gmr = R"##(1
@@ -226,5 +215,22 @@ retry:
 
   vg.GetInvariants().ExportToFile(OutputPath+"inv.txt",false);
   set_result(OutputPath, succeed,  t_syn + t_eq , n_cegar , t_syn , t_eq);
+
+
+  {
+    std::ofstream fout(OutputPath+"stat.txt");
+    int ncs, ncio, ndsrc, nddst, nvargrp;
+    get_grm_stat((RootPath+"/grm/pico.gmr").c_str(), ncs, ncio, ndsrc, nddst, nvargrp);
+    auto design_stat = vg.GetDesignStatistics();
+    fout <<"State bits: " << design_stat.NumOfDesignStateBits << std::endl;
+    fout <<"State vars: " << design_stat.NumOfDesignStateVars << std::endl;
+    fout <<"#(Ctrl-state): " << ncs << std::endl;
+    fout <<"#(Ctrl-inout): " << ncio << std::endl;
+    fout <<"#(Data-src): " << ndsrc << std::endl;
+    fout <<"#(Data-dst): " << nddst << std::endl;
+    fout <<"#(Var-grp): " << nvargrp << std::endl;
+    fout <<"#(cand): " << vg.total_freqhorn_cand << std::endl;
+  }
+
   return 0;
 }

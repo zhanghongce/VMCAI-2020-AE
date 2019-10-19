@@ -1,4 +1,6 @@
 */result-stat.txt
+*/stat.txt
+*/grain_result.txt
 configs/local.cfg
 *.pyc
 backups/*

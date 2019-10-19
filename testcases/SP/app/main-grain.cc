@@ -58,6 +58,8 @@ int main (int argc, char ** argv) {
   double t_eq = 0;
   double t_syn = 0;
   double t_total = 0;
+  int ncand;
+  int max_conseq_size = 0;
   bool succeed = true;
   set_timeout(timeout, outDir, &n_cegar, &t_syn, & t_eq);
   
@@ -77,18 +79,8 @@ int main (int argc, char ** argv) {
       succeed = (false);
   }
   {
-    std::string gmr = R"##(CTRL-STATE: m1.reg_0_w_stage, m1.reg_1_w_stage, m1.reg_2_w_stage, m1.reg_3_w_stage
-CTRL-OUT: m1.id_ex_reg_wen, m1.ex_wb_reg_wen 
-DATA-OUT: m1.id_ex_rd, m1.ex_wb_rd
-VAR-GROUP: m1.id_ex_reg_wen, m1.id_ex_rd
-VAR-GROUP: m1.ex_wb_reg_wen, m1.ex_wb_rd
-)##";
-
-    std::ofstream fout(outDir + "inv-syn/pipe.gmr");
-    if (fout.is_open())
-      fout << gmr;
-    else
-      succeed = (false);
+    os_portable_mkdir(outDir + "inv-syn");
+    os_portable_copy_file_to_dir(dirName+"grm/sp.gmr", outDir + "inv-syn/pipe.gmr");
   } // save grammar file
   
   InvariantSynthesizerCegar vg(
@@ -114,9 +106,12 @@ VAR-GROUP: m1.ex_wb_reg_wen, m1.ex_wb_rd
       fh_options[3] = std::to_string(conseq_size);
       vg.ChangeFreqHornSyntax(fh_options);
 
+      vg.total_freqhorn_cand = 0;
       vg.GenerateSynthesisTarget();
       if(vg.RunSynAuto()) {
         conseq_size ++;
+        if (conseq_size > max_conseq_size)
+          max_conseq_size = conseq_size;
         std::cout << "Conseq size increase to #" << conseq_size << std::endl;
         if (conseq_size < 3)
           goto pipe_conseq_retry;
@@ -131,11 +126,27 @@ VAR-GROUP: m1.ex_wb_reg_wen, m1.ex_wb_rd
     t_syn = design_stat.TimeOfInvSyn;
     t_total = design_stat.TimeOfEqCheck + design_stat.TimeOfInvSyn;
     n_cegar ++;
-
     }while(not vg.in_bad_state());
 
 
   vg.GetInvariants().ExportToFile(outDir+"inv.txt",false);
   set_result(outDir, succeed,  t_syn + t_eq , n_cegar , t_syn , t_eq);
+
+  {
+    std::ofstream fout(outDir+"stat.txt");
+    int ncs, ncio, ndsrc, nddst, nvargrp;
+    get_grm_stat((dirName+"grm/sp.gmr").c_str(), ncs, ncio, ndsrc, nddst, nvargrp);
+    auto design_stat = vg.GetDesignStatistics();
+    fout <<"State bits: " << design_stat.NumOfDesignStateBits << std::endl;
+    fout <<"State vars: " << design_stat.NumOfDesignStateVars << std::endl;
+    fout <<"#(Ctrl-state): " << ncs << std::endl;
+    fout <<"#(Ctrl-inout): " << ncio << std::endl;
+    fout <<"#(Data-src): " << ndsrc << std::endl;
+    fout <<"#(Data-dst): " << nddst << std::endl;
+    fout <<"#(Var-grp): " << nvargrp << std::endl;
+    fout <<"#(cand): " << vg.total_freqhorn_cand << std::endl;
+    fout <<"max (conseq-size): " << max_conseq_size << std::endl;
+  }
+
   return 0;
 }

@@ -69,21 +69,11 @@ int main (int argc, char ** argv) {
   double t_total = 0;
   bool succeed = true;
   set_timeout(timeout, OutputPath, &n_cegar, &t_syn, & t_eq);
-  { // save grammar file
-    os_portable_mkdir(OutputPath+"inv-syn");
-    std::string gmr = R"##(CTRL-STATE: m1.aes_reg_state, m1.byte_counter, m1.aes_time_counter
-CTRL-OUT: m1.byte_counter, m1.aes_time_counter
-DATA-OUT: m1.uaes_ctr, m1.block_counter
-DATA-IN: m1.aes_reg_ctr_i.reg_out, m1.block_counter, m1.operated_bytes_count
-)##";
 
-    std::ofstream fout(OutputPath + "inv-syn/aes.gmr");
-    if (fout.is_open())
-      fout << gmr;
-    else
-      succeed = false;
+  {
+    os_portable_mkdir(OutputPath + "inv-syn");
+    os_portable_copy_file_to_dir(RootPath+"/grm/aes.gmr", OutputPath + "inv-syn/aes.gmr");
   } // save grammar file
-
 
   std::vector<std::string> to_drop_states = {
     "m1.encrypted_data_buf[127:0]",
@@ -120,6 +110,7 @@ DATA-IN: m1.aes_reg_ctr_i.reg_out, m1.block_counter, m1.operated_bytes_count
     }
     vg.ExtractVerificationResult();
     vg.CexGeneralizeRemoveStates(to_drop_states);
+    vg.total_freqhorn_cand = 0;
     vg.GenerateSynthesisTarget();
     if(vg.RunSynAuto()) {
       std::cerr << "Cex is reachable! Cegar failed" << std::endl;
@@ -138,6 +129,23 @@ DATA-IN: m1.aes_reg_ctr_i.reg_out, m1.block_counter, m1.operated_bytes_count
 
   vg.GetInvariants().ExportToFile(OutputPath+"inv.txt",false);
   set_result_aes(OutputPath, succeed,  t_syn + t_eq , n_cegar , t_syn , t_eq);
+
+
+  {
+    std::ofstream fout(OutputPath+"stat.txt");
+    int ncs, ncio, ndsrc, nddst, nvargrp;
+    get_grm_stat((RootPath+"/grm/aes.gmr").c_str(), ncs, ncio, ndsrc, nddst, nvargrp);
+    auto design_stat = vg.GetDesignStatistics();
+    fout <<"State bits: " << design_stat.NumOfDesignStateBits << std::endl;
+    fout <<"State vars: " << design_stat.NumOfDesignStateVars << std::endl;
+    fout <<"#(Ctrl-state): " << ncs << std::endl;
+    fout <<"#(Ctrl-inout): " << ncio << std::endl;
+    fout <<"#(Data-src): " << ndsrc << std::endl;
+    fout <<"#(Data-dst): " << nddst << std::endl;
+    fout <<"#(Var-grp): " << nvargrp << std::endl;
+    fout <<"#(cand): " << vg.total_freqhorn_cand << std::endl;
+  }
+
   return 0;
 }
 

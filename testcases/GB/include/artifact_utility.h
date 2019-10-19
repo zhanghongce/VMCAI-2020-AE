@@ -1,6 +1,5 @@
 #ifndef ARTIFACT_UTILITY_H__
 #define ARTIFACT_UTILITY_H__
-
 #include <string>     // std::string, std::stoi
 
 int get_timeout(int argc, char ** argv);
@@ -12,5 +11,6 @@ void cancel_verify_timeout(int sec,  const std::string & outDir,   int * cegar_i
 
 void get_grm_stat(const char * grm_fname, int & ncs, int & ncio, int & ndsrc, int & nddst, int & nvargrp);
 
+int loadCandFromFile(const std::string & f);
 
 #endif // ARTIFACT_UTILITY_H__

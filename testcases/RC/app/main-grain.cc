@@ -38,7 +38,7 @@ int main (int argc, char ** argv) {
   cfg.FreqHornPath = FREQHORNPath;
   cfg.FreqHornHintsUseCnfStyle = true;
   cfg.FreqHornOptions = {
-    "--skip-cnf --skip-const-check --skip-stat-collect --ante-size 1 --conseq-size 1  --cnf cnt-no-group.cnf --use-arith-bvnot --no-const-enum-vars-on m1.v,m1.imp"};
+    "--skip-cnf --skip-const-check --skip-stat-collect --ante-size 1 --conseq-size 1  --grammar rc.gmr --use-arith-bvnot --no-const-enum-vars-on m1.v,m1.imp"};
   cfg.CosaSolver = "btor";
 
   auto dirName = std::string("../");
@@ -51,6 +51,7 @@ int main (int argc, char ** argv) {
   bool succeed = true;
   set_timeout(timeout, outDir, &n_cegar, &t_syn, & t_eq);
   
+  /*
   InvariantInCnf var_in_cnf;
   { // save grammar file
     os_portable_mkdir(outDir + "inv-syn");
@@ -64,8 +65,14 @@ int main (int argc, char ** argv) {
       var_in_cnf.ExportInCnfFormat(fout);
     else
       succeed = false;
-  } // save grammar file
-  
+  } */ // save grammar file
+
+  InvariantInCnf var_in_cnf;
+  { // save grammar file
+    os_portable_mkdir(outDir + "inv-syn");
+    os_portable_copy_file_to_dir(dirName+"grm/rc.gmr", outDir + "inv-syn");
+  } 
+
   InvariantSynthesizerCegar vg(
       {},                          // no include
       {dirName + "verilog/opposite.v"}, //
@@ -100,5 +107,21 @@ int main (int argc, char ** argv) {
 
   vg.GetInvariants().ExportToFile(outDir+"inv.txt",false);
   set_result(outDir, succeed,  t_syn + t_eq , n_cegar , t_syn , t_eq);
+
+  {
+    std::ofstream fout(outDir+"stat.txt");
+    int ncs, ncio, ndsrc, nddst, nvargrp;
+    get_grm_stat((dirName+"grm/rc.gmr").c_str(), ncs, ncio, ndsrc, nddst, nvargrp);
+    auto design_stat = vg.GetDesignStatistics();
+    fout <<"State bits: " << design_stat.NumOfDesignStateBits << std::endl;
+    fout <<"State vars: " << design_stat.NumOfDesignStateVars << std::endl;
+    fout <<"#(Ctrl-state): " << ncs << std::endl;
+    fout <<"#(Ctrl-inout): " << ncio << std::endl;
+    fout <<"#(Data-src): " << ndsrc << std::endl;
+    fout <<"#(Data-dst): " << nddst << std::endl;
+    fout <<"#(Var-grp): " << nvargrp << std::endl;
+    fout <<"#(cand): " << vg.total_freqhorn_cand << std::endl;
+  }
+
   return 0;
 }

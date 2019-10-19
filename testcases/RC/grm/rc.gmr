@@ -1,2 +1,2 @@
-DATA-IN: m1.v, m1.imp
-DATA-OUT: m1.v, m1.imp
+DATA-SRC: m1.v, m1.imp
+DATA-DST: m1.v, m1.imp

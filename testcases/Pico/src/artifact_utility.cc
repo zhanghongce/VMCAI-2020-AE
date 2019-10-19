@@ -1,6 +1,9 @@
 #include "artifact_utility.h"
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <set>
+#include <vector>
 #include <signal.h>
 #include <unistd.h>
 #include <stdbool.h>
