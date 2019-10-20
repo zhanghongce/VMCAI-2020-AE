@@ -29,7 +29,22 @@ def CountRuns(tests):
     ret_len += len(l)
   return ret_len
   
-  
+def collectStat(tests):
+  fout = open("table2.txt",'w')
+  cwd = os.getcwd()
+  for directory, test_list in tests:
+    fout.write('\n')
+    fout.write('-------------------------\n')
+    fout.write('Design: '+directory+"\n")
+    stat = os.path.join(cwd, directory,'verification','Grain','stat.txt')
+    if os.path.exists( stat ):
+      fin = open(stat)
+      fout.write(fin.read())
+    else:
+      fout.write('Statistics: not available\n')
+    fout.write('-------------------------\n')
+    fout.write('\n')  
+    
 
 def getNumbers(fin):
   res = fin.readline()
@@ -181,6 +196,7 @@ print
 
 ClearVerifOutput(testset)
 RunTests(testset, args.timeout, CountRuns(testset))
+collectStat(testset)
 #ClearVerifOutput(TestsAll)
     
 
