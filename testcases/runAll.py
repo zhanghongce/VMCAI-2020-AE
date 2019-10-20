@@ -10,11 +10,11 @@ from customized_timeout import TimeoutException,TimeoutError
 proc_to_kill = {"PdrChc":"z3", "Cvc4Sy": "cvc4", "PdrAbc":"abc", "RelChc":"z3", "Grain":"bv"}
 
 TestAll = \
-  [("RC",[("RCrelchc","RelChc"),("RCpdrabc","PdrAbc"), ("RCpdrchc","PdrChc"), ("RCcvc4sy","Cvc4Sy"), ("RCgrain","Grain")]),
-  ("SP",[("SPpdrabc","PdrAbc"), ("SPpdrchc","PdrChc"), ("SPgrain","Grain"), ("SPrelchc","RelChc"), ("SPcvc4sy","Cvc4Sy") ]),
-  ("AES",[("AESrelchc","RelChc"),("AESpdrabc","PdrAbc"), ("AESpdrchc","PdrChc"), ("AEScvc4sy","Cvc4Sy")]),
-  ("Pico",[("PICOrelchc","RelChc"),("PICOpdrabc","PdrAbc"), ("PICOpdrchc","PdrChc"), ("PICOcvc4sy","Cvc4Sy")]),
-  ("GB",[("GBpdrchc","PdrChc"), ("GBcvc4sy","Cvc4Sy"), ("GBgrain","Grain")])]
+  [("RC", [("RCrelchc","RelChc"),  ("RCpdrabc","PdrAbc"),   ("RCpdrchc","PdrChc"),   ("RCcvc4sy","Cvc4Sy"),   ("RCgrain","Grain")]),
+  ("SP",  [("SPrelchc","RelChc"),  ("SPpdrabc","PdrAbc"),   ("SPpdrchc","PdrChc"),   ("SPcvc4sy","Cvc4Sy"),   ("SPgrain","Grain")]),
+  ("AES", [("AESrelchc","RelChc"), ("AESpdrabc","PdrAbc"),  ("AESpdrchc","PdrChc"),  ("AEScvc4sy","Cvc4Sy"),  ("AESgrain","Grain")]),
+  ("Pico",[("PICOrelchc","RelChc"),("PICOpdrabc","PdrAbc"), ("PICOpdrchc","PdrChc"), ("PICOcvc4sy","Cvc4Sy"), ("PICOgrain","Grain")]),
+  ("GB",  [("GBrelchc","RelChc"),  ("GBpdrabc","PdrAbc"),   ("GBpdrchc","PdrChc"),   ("GBcvc4sy","Cvc4Sy"),   ("GBgrain","Grain")])]
   
 def CountRuns(tests):
   ret_len = 0
@@ -157,12 +157,9 @@ parser.add_argument('-t','--timeout',
                     default=2*60*60,
                     help='The time limit in seconds')
                     
-parser.add_argument('-a','--all', action='store_true',
-                    default=False,
-                    help='Run all the tests (default: only GBpdrchc and GBcvc4sy)')
                     
 args = parser.parse_args()
-testset = TestFull
+testset = TestAll
 
 print '--------------------------'
 print '|        Jobs            |'
