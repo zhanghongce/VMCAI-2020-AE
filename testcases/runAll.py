@@ -9,6 +9,13 @@ from customized_timeout import TimeoutException,TimeoutError
 
 proc_to_kill = {"PdrChc":"z3", "Cvc4Sy": "cvc4", "PdrAbc":"abc", "RelChc":"z3", "Grain":"bv"}
 
+TestSucc = \
+  [("RC", [("RCrelchc","RelChc"),  ("RCpdrabc","PdrAbc"),   ("RCpdrchc","PdrChc"),   ("RCcvc4sy","Cvc4Sy"),   ("RCgrain","Grain")]),
+  ("SP",  [("SPrelchc","RelChc"),  ("SPpdrabc","PdrAbc"),   ("SPpdrchc","PdrChc"),   ("SPgrain","Grain")]),
+  ("AES", [("AESgrain","Grain")]),
+  ("Pico",[("PICOgrain","Grain")]),
+  ("GB",  [("GBpdrchc","PdrChc"),   ("GBcvc4sy","Cvc4Sy"),   ("GBgrain","Grain")])]
+  
 TestAll = \
   [("RC", [("RCrelchc","RelChc"),  ("RCpdrabc","PdrAbc"),   ("RCpdrchc","PdrChc"),   ("RCcvc4sy","Cvc4Sy"),   ("RCgrain","Grain")]),
   ("SP",  [("SPrelchc","RelChc"),  ("SPpdrabc","PdrAbc"),   ("SPpdrchc","PdrChc"),   ("SPcvc4sy","Cvc4Sy"),   ("SPgrain","Grain")]),
@@ -156,10 +163,13 @@ parser = argparse.ArgumentParser(description='Run Experiments on Redundant Count
 parser.add_argument('-t','--timeout',
                     default=2*60*60,
                     help='The time limit in seconds')
-                    
+
+parser.add_argument('-a','--all', action='store_true',
+                    default=False,
+                    help='Run all the tests (default: only run those that can succeed)')                    
                     
 args = parser.parse_args()
-testset = TestAll
+testset = TestAll if args.all else TestSucc
 
 print '--------------------------'
 print '|        Jobs            |'

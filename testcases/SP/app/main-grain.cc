@@ -58,7 +58,7 @@ int main (int argc, char ** argv) {
   double t_eq = 0;
   double t_syn = 0;
   double t_total = 0;
-  int ncand;
+  int ncand = 0;
   int max_conseq_size = 0;
   bool succeed = true;
   set_timeout(timeout, outDir, &n_cegar, &t_syn, & t_eq);
@@ -93,7 +93,6 @@ int main (int argc, char ** argv) {
       VerilogVerificationTargetGenerator::synthesis_backend_selector::FreqHorn,
       cfg);
 
-
     do{
       vg.GenerateVerificationTarget();
       if(vg.RunVerifAuto("ADD")) // the ADD
@@ -126,6 +125,8 @@ int main (int argc, char ** argv) {
     t_syn = design_stat.TimeOfInvSyn;
     t_total = design_stat.TimeOfEqCheck + design_stat.TimeOfInvSyn;
     n_cegar ++;
+    if (vg.total_freqhorn_cand > ncand)
+      ncand = vg.total_freqhorn_cand;
     }while(not vg.in_bad_state());
 
 
@@ -144,7 +145,7 @@ int main (int argc, char ** argv) {
     fout <<"#(Data-src): " << ndsrc << std::endl;
     fout <<"#(Data-dst): " << nddst << std::endl;
     fout <<"#(Var-grp): " << nvargrp << std::endl;
-    fout <<"#(cand): " << vg.total_freqhorn_cand << std::endl;
+    fout <<"#(cand): " << ncand << std::endl;
     fout <<"max (conseq-size): " << max_conseq_size << std::endl;
   }
 
