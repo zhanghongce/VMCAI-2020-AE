@@ -67,7 +67,8 @@ def RunTests(tests, timeout, total):
       print 'Design:',directory
       idx += 1
       if not os.path.exists( full_prg ):
-        print full_prg,'not available'
+        print 'skipped'
+        continue
 
       os.chdir(test_prg_dir)
       #result_log = open('running_result.log','w')
@@ -161,7 +162,7 @@ parser.add_argument('-a','--all', action='store_true',
                     help='Run all the tests (default: only GBpdrchc and GBcvc4sy)')
                     
 args = parser.parse_args()
-testset = TestFull if args.all else TestSucc
+testset = TestFull
 
 print '--------------------------'
 print '|        Jobs            |'
