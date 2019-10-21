@@ -124,6 +124,24 @@ def RunTests(tests, timeout, total):
           print 'Unable to kill'
         process.wait()   
         
+      if directory == 'Pico' and outDir == 'Grain':
+        cmd = ['pgrep','-f','.*python.*runAll.py']
+        process = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, 
+          stderr=subprocess.PIPE)
+        my_pid, err = process.communicate()
+        should_not_kill = my_pid.splitlines()
+        
+        cmd2 = ['pgrep', '-n' ,'python']
+        process2 = subprocess.Popen(cmd2, shell=False, stdout=subprocess.PIPE, 
+          stderr=subprocess.PIPE)
+        my_pid, err = process2.communicate()
+        should_kill = my_pid.splitlines()
+        
+        for p in should_kill:
+          if p in should_not_kill:
+            continue
+          os.system('kill '+p)    
+        
       if len(proc_name)>0:
           pkill_result = os.system('pkill -n '+proc_name) 
           if pkill_result == 256:
@@ -194,8 +212,11 @@ print 'Time-out limit (sec): ',args.timeout
 print '--------------------------'
 print 
 
+
+cwd = os.getcwd()
 ClearVerifOutput(testset)
 RunTests(testset, args.timeout, CountRuns(testset))
+os.chdir(cwd)
 collectStat(testset)
 #ClearVerifOutput(TestsAll)
     
