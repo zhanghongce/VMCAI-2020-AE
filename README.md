@@ -1,11 +1,11 @@
 Installation
 ==================
 
-1. Please first download the zip archive from the [link](https://github.com/zhanghongce/VMCAI-2020-AE/archive/refs/heads/master.zip) we provided. (You should have already completed this step)
+1. Please first download the zip archive from the [link](https://github.com/zhanghongce/VMCAI-2020-AE/archive/refs/heads/master.zip) we provided and put it into the [VMCAI2020 Artifact Evaluation Virtual Machine](https://zenodo.org/record/3533104#.YgfW2_sRUS8). (You should have already completed this step)
 
-2. Unzip the archive if you have not done so. You can either (a) double click the archive in the file explorer (namely nautilus) and click "Extract" on the top left corner of the window to unzip or (b) using command line `unzip master.zip`. The unzipping process will automatically create a folder named `VMCAI-2020-AE-master`. Within this folder you can find this README, installation scripts, license, the dependent tools/packages, and the test cases.
+2. Unzip the archive if you have not done so. You can either (a) double click the archive in the file explorer (namely nautilus) and click "Extract" on the top left corner of the window to unzip or (b) using command line `unzip VMCAI-2020-AE-master.zip`. The unzipping process will automatically create a folder named `VMCAI-2020-AE-master`. Within this folder you can find this README, installation scripts, license, the dependent tools/packages, and the test cases.
 
-3. Open a terminal and change directory into the `VMCAI-2020-AE-master` folder. You can do this by first using the file explorer to navigate into the `VMCAI-2020-AE-master` folder and right clicking in the blank space of the file explorer and select "Open in Terminal".
+3. Start a terminal and change directory into the `VMCAI-2020-AE-master` folder. You can do this by first using the file explorer to navigate into the `VMCAI-2020-AE-master` folder and right clicking in the blank space of the file explorer and select "Open in Terminal".
 
 
 4. Install dependent Debian packages, in the terminal opened in the previous step, run 
@@ -111,7 +111,7 @@ virtual machine, the outcome could differ in the following ways:
      some experiments, which are for comparison purpose, may hit memory limit first
      and terminate due to out-of-memory error instead of time-out.
 
-  2. For avoid the long evaluation time, we set a smaller time-out limit (2 hours in maximum for 
+  2. To avoid the long running time, we set a smaller time-out limit (2 hours in maximum for 
      each run). We originally use 10 hours as the time-limit.
   
   3. The functional equivalence checking procedure may not always generate the same model 
