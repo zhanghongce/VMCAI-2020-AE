@@ -1,7 +1,7 @@
 Installation
 ==================
 
-1. Please first download the zip archive from the link we provided. (You should have already completed this step)
+1. Please first download the zip archive from the [link](https://github.com/zhanghongce/VMCAI-2020-AE/archive/refs/heads/master.zip) we provided. (You should have already completed this step)
 
 2. Unzip the archive if you have not done so. You can either (a) double click the archive in the file explorer (namely nautilus) and click "Extract" on the top left corner of the window to unzip or (b) using command line `unzip master.zip`. The unzipping process will automatically create a folder named `VMCAI-2020-AE-master`. Within this folder you can find this README, installation scripts, license, the dependent tools/packages, and the test cases.
 
